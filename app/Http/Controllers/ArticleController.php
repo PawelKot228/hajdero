@@ -20,6 +20,7 @@ class ArticleController extends Controller
     public function show($article)
     {
         $article = Article::with([
+            'images',
             'comments.subcomments',
             'comments' => function ($q) {
                 $q->withCount('likes');
