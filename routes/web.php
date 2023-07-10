@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,16 +14,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified'
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::resource('articles', ArticleController::class)->except(['index', 'show']);
+//    Route::resource('articles.comments', CommentController::class)->except(['index', 'show']);
+});
+
+Route::resource('articles', ArticleController::class)->only(['index', 'show']);
+
+Route::get('/', function () {
+    return to_route('articles.index');
 });
