@@ -31,28 +31,7 @@
     @endif
 
     <div class="md:col-span-1 lg:col-span-3 md:col-span-2">
-        <div class="inline-flex items-center text-pink-700">
-            @auth
-                <form method="POST" class="mt-1" action="{{ route('likes.store') }}">
-                    @csrf
-                    <button>
-                        <input type="hidden" name="type" value="articles">
-                        <input type="hidden" name="parent_id" value="{{$article->id}}">
-                        @if($article->user_likes)
-                            <input type="hidden" name="mode" value="0">
-                            @svg('heroicon-s-thumb-up', 'h-6 w-6')
-                        @else
-                            <input type="hidden" name="mode" value="1">
-                            @svg('heroicon-o-thumb-up', 'h-6 w-6')
-                        @endif
-                    </button>
-                </form>
-            @endauth
-            @guest
-                @svg('heroicon-o-thumb-up', 'h-6 w-6')
-            @endguest
-            <b>{{$article->likes_count}}</b>
-        </div>
+        <x-like :object="$article" type="articles"/>
         &ensp;
         <div class="inline-flex items-center text-green-700">
             @svg('heroicon-o-chat', 'h-6 w-6') <b>{{$article->comments_count}}</b>
