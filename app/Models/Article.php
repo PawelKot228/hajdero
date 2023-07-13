@@ -17,6 +17,7 @@ class Article extends Model
         'title',
         'text',
         'is_published',
+        'cover',
         'published_at',
     ];
 

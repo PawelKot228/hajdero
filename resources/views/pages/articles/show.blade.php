@@ -7,11 +7,11 @@
     <div class="pt-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <x-article :article="$article" :more="false"/>
+                <x-article :article="$article" :show="true"/>
             </div>
         </div>
     </div>
-    @if($article->images)
+    @if($article->images->count())
         <div class="pt-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
@@ -23,7 +23,7 @@
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                         <div class="bg-gray-200 bg-opacity-25 grid grid-cols-1 gap-6 lg:gap-8 p-6 lg:p-8">
                             @foreach($article->images as $image)
-                                <img src="{{asset('storage/'.$image->image)}}" style="width: 100%" alt="image">
+                                <img class="w-full" src="{{asset('storage/'.$image->image)}}" alt="image">
                             @endforeach
                         </div>
                     </div>
@@ -33,17 +33,25 @@
     @endif
     @auth
         <div class="pt-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+            <div class="bg-gray-100">
+                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                        <div
-                            class="bg-gray-200 bg-opacity-25 grid grid-cols-1 md:grid-cols-4 gap-6 lg:gap-8 p-6 lg:p-8">
-                            <div class="md:col-span-1 lg:col-span-3 md:col-span-2">
-                                <textarea style="width: 100%; resize: none"></textarea>
-                            </div>
-                            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                Add comment
-                            </button>
+                        <div class="bg-gray-200 bg-opacity-25 grid grid-cols-1 gap-6 lg:gap-8 p-6 lg:p-8">
+                            <form method="POST" action="{{ route('comments.store') }}">
+                                @csrf
+                                <div>
+                                    <x-label for="text" value="{{ __('Comment') }}"/>
+                                    <x-textarea name="text" id="text" required></x-textarea>
+                                    <x-input-error for="text"/>
+                                    <input type="hidden" name="type" value="article">
+                                    <input type="hidden" name="parent_id" value="{{$article->id}}">
+                                </div>
+                                <div class="flex justify-end">
+                                    <x-button>
+                                        {{ __('Comment') }}
+                                    </x-button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

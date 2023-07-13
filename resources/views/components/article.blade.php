@@ -1,8 +1,26 @@
-<div class="p-6 lg:p-8 bg-orange-200 border-b border-gray-200">
+<div id="articles-{{$article->id}}" class="p-6 lg:p-8 bg-orange-200 border-b border-gray-200">
     <h1 class="text-2xl font-medium text-gray-900">
         {{$article->title}}
     </h1>
-    by <span class="text-indigo-700">{{$article->user->name}}</span>
+    by <span class="text-indigo-700">{{$article->user->name}}</span><br>
+    <span class="text-gray-500">{{$article->created_at->diffForHumans()}}</span>
+    @if($show && !$article->is_published)
+        <form method="GET" class="mt-1" action="{{ route('articles.publish', [$article]) }}">
+            @csrf
+            <x-button class="bg-cyan-500">
+                {{ __('Publish') }}
+            </x-button>
+        </form>
+    @endif
+    @if($article->user_id === auth()->id())
+        <form method="POST" class="mt-1" action="{{ route('articles.destroy', [$article]) }}">
+            @csrf
+            @method('DELETE')
+            <x-button class="bg-red-500">
+                {{ __('Remove') }}
+            </x-button>
+        </form>
+    @endif
 </div>
 
 <div class="bg-gray-200 bg-opacity-25 grid grid-cols-1 md:grid-cols-4 gap-6 lg:gap-8 p-6 lg:p-8">
@@ -14,7 +32,26 @@
 
     <div class="md:col-span-1 lg:col-span-3 md:col-span-2">
         <div class="inline-flex items-center text-pink-700">
-            @svg('heroicon-o-thumb-up', 'h-6 w-6') <b>{{$article->likes_count}}</b>
+            @auth
+                <form method="POST" class="mt-1" action="{{ route('likes.store') }}">
+                    @csrf
+                    <button>
+                        <input type="hidden" name="type" value="articles">
+                        <input type="hidden" name="parent_id" value="{{$article->id}}">
+                        @if($article->user_likes)
+                            <input type="hidden" name="mode" value="0">
+                            @svg('heroicon-s-thumb-up', 'h-6 w-6')
+                        @else
+                            <input type="hidden" name="mode" value="1">
+                            @svg('heroicon-o-thumb-up', 'h-6 w-6')
+                        @endif
+                    </button>
+                </form>
+            @endauth
+            @guest
+                @svg('heroicon-o-thumb-up', 'h-6 w-6')
+            @endguest
+            <b>{{$article->likes_count}}</b>
         </div>
         &ensp;
         <div class="inline-flex items-center text-green-700">
@@ -23,7 +60,7 @@
         <p class="mt-4 text-gray-500 text-sm leading-relaxed">
             {{$article->text}}
         </p>
-        @if($more)
+        @if(!$show)
             <p class="mt-4 text-sm">
                 <a href="{{route('articles.show', [$article])}}"
                    class="inline-flex items-center font-semibold text-indigo-700">

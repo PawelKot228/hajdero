@@ -17,7 +17,7 @@
         <div class="pt-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <x-article :article="$article" :more="true"/>
+                    <x-article :article="$article" :show="false"/>
                 </div>
             </div>
         </div>

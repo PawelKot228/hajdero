@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\ArticleController;
+namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,7 +21,9 @@ Route::middleware([
     'verified'
 ])->group(function () {
     Route::resource('articles', ArticleController::class)->except(['index', 'show']);
-//    Route::resource('articles.comments', CommentController::class)->except(['index', 'show']);
+    Route::get('articles/publish/{article}', [ArticleController::class, 'publish'])->name('articles.publish');
+    Route::resource('comments', CommentController::class)->only(['store', 'destroy']);
+    Route::resource('likes', LikeController::class)->only(['store']);
 });
 
 Route::resource('articles', ArticleController::class)->only(['index', 'show']);
